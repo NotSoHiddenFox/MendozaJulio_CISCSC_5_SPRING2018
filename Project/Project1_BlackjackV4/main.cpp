@@ -8,7 +8,7 @@
  * 
  * ToDo:
  *fix if first card is ace it allows to only play one card
- * 
+ * fix endless loop with invalid input for ACES
  * 
  */
 
