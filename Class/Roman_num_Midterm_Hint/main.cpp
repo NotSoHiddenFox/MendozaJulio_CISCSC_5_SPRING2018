@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
             << static_cast<int> (n100s)
             << static_cast<int> (n10s)
             << static_cast<int> (n1s)
-            << "Roman equivalent = " << roman << endl;
+            << " Roman equivalent = " << roman << endl;
     //Exit
     return 0;
 }
