@@ -2,14 +2,11 @@
  * File:   main.cpp
  * Author: Julio A. Mendoza
  * Created on April 19, 2018, 11:00 AM
- *Purpose: Allows you to pull a random card from a deck
- *      Bugfix ED  
+ *Purpose: Allows you to play a simple game of blackjack against the program.
  *        
  * 
  * ToDo:
- *fix if first card is ace it allows to only play one card
- * fix endless loop with invalid input for ACES
- * BUGFIXING
+ *
  */
 
 //System Libraries
@@ -67,11 +64,18 @@ int main(int argc, char** argv) {
     //Begin by assigning a value to all 52 cards.
     //this loop individually checks each card to ensure it does not have a value
     //before being assigned one. It will assign a value if necessary.
+    
+    cout<<"This is a simple game of Blackjack. The rules are as follows:\n"
+            "The goal is to get a score as close to 21 as possible without"
+            "going over.\n"
+            "Aces can be played as either a 1 or an 11 and cannot be changed.\n"
+            "Your opponent will also attempt to reach 21 and has no minimum.\n"
+            "You decide weather to draw another card up to a total of five.\n";
+    cout<<"-------------------------------------------------------------------"
+            <<endl;
     do {
-        remain = true; //Resets the selection loop for Aces.
-        //card = rand() % 52; //[0-51]
-card = rand() % 1+49; //[0-51]
-
+ 
+        card = rand() % 52; //[0-51]
 
         //2 of spades
         if (card == 0) {
@@ -6609,7 +6613,7 @@ dealer() {
     int toBeat; //this will be the score to beat
     //this defines the score to beat. It is a simple value determined without
     //actually playing the game.
-    //this assumes the dealer is stupid enough to play two aces as two ones.
+    //this assumes the dealer is capable enough to play two aces as two ones.
     //it also assumes the dealer will occasionally get three tens.
     toBeat = rand() % 31 + 2; //[4-30]
     if (toBeat > 21) toBeat = 0; //this is used to know the dealer is bust.
