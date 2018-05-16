@@ -2,7 +2,7 @@
  * File:   main.cpp
  * Author: Julio A. Mendoza
  * Created on May 15, 2018, 2:00 PM
- *Purpose: Allows you to play a simple game of blackjack against the program.
+ *Purpose: This program draws cards from a deck.
  *        This version is receiving performance improvements.
  * 
  * ToDo:
@@ -25,9 +25,9 @@ using namespace std; //namespace I/O stream library cr
 //Math, Physics, Science, Conversions, 2-D Arrays Columns
 
 //Function Prototypes go here.
-int dealer();
-int deck();
-
+//int dealer();
+string deckSuit();
+string deckCard();
 
 //Executions Begin Here!
 
@@ -35,7 +35,12 @@ int main(int argc, char** argv) {
     //seed rng
     srand(static_cast<unsigned int> (time(0)));
     //declare variables
-    cout << deck();
+
+    cout << "Draw two cards for player one:" << endl;
+    deckSuit();
+    deckCard();
+    cout << "I have received the following in MAIN:\nSuit: " << deckSuit()
+            << "\nCard: " << deckCard() << endl;
     return 0;
 }
 
@@ -50,47 +55,46 @@ dealer() {
     return toBeat;
 }
 
-deck() {
-    //Declarations
+string deckSuit() {
+    //Declarations 
+    int rSuit = 0; //used to select suit array location randomly
     ifstream suit; //the suit of the card
-    ifstream card; //The face of the card drawn. 
     suit.open("suit.dat");
-    card.open("card.dat");
-
-    
-    int value = 0; //the value of the card drawn.
-    string dSuit[3]={"","",""}; //The array holding the suit of the cards. 4
-    string dCard[12]={"","","","","","","","","","","",""}; //The array holding the card number drawn. 13
-
-    //open the files holding the cards
-    
+    string dSuit[4]; //The array holding the suit of the cards.
+    //Initialize the Arrays
+    dSuit[0] = "0";
+    dSuit[1] = "0";
+    dSuit[2] = "0";
+    dSuit[3] = "0";
     //load the Suits into the program from suit.dat
     for (int i = 0; i < 4; i++) {
         suit >> dSuit[i];
     }
-
-    //load the Cards into the from program from card.dat
-
-    for (int i = 0; i < 13; i++) {
-           card >> dCard[i];
-    }
-
-
-    //decide the suit drawn
-
-    cout << rand() % 4;
+    //close the card program
     suit.close();
-    card.close();
-    for (int i = 0; i < 4; i++) {
+    //decide the suit drawn
+    rSuit = rand() % 4;
+    return dSuit[rSuit];
+}
 
-        cout << endl << "Suit From Array:   " << dSuit[i] << endl;
-
-    }
+string deckCard() {
+    //Declarations
+    int rCard = 0; //used to select card array location randomly
+    ifstream card; //The face of the card drawn. 
+    card.open("card.dat");
+    string dCard[13]; //The array holding the card number drawn. 13
+    //Initialize the Arrays
     for (int i = 0; i < 13; i++) {
-        cout << endl << "Card From Array:   " << dCard[i] << endl;
+        dCard[i] = "0";
     }
-
-   
-    return value;
+    //load the Cards into the from program from card.dat
+    for (int i = 0; i < 13; i++) {
+        card >> dCard[i];
+    }
+    //close the card program
+    card.close();
+    //decide the card drawn
+    rCard = rand() % 13;
+    return dCard[rCard];
 
 }
