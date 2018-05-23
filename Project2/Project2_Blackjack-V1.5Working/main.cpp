@@ -14,7 +14,7 @@
  *      Allow the user to decide if to draw a card: COMPLETE
  *      State the card drawn per round: COMPLETE
  *      Add a value to the cards: COMPLETE
- *      Add a Win/Lose condition: INCOMPLETE
+ *      Add a Win/Lose condition: IN PROGRESS
  *      Integrate the Dealer Function:  INCOMPLETE
  * Past Challenge:
  *                Stating the card when using two different functions to draw 
@@ -36,6 +36,10 @@
  *                   I will now attempt to create conditions stating if you 
  *                   win or lose. This should be easily done with a function 
  *                   and the use of the value variable in main.
+ *  
+ *                   The game now gives you a score variable used to determine
+ *                   what can happen with the game. I still need to apply the 
+ *                   if statements to guarantee they are used properly.
  */
 
 //System Libraries
@@ -58,7 +62,7 @@ using namespace std; //namespace I/O stream library cr
 string deckSuit();
 string deckCard();
 int getVal(string); //this assigns a value to a card
-int score(int, int);
+int getScore(int, int);
 bool isDupe(string [], int length, string toTest, int skip);
 
 
@@ -118,12 +122,12 @@ int main(int argc, char** argv) {
 
     cout << "You have drawn " << playOne[0] << " and "
             << playOne[1] << "." << endl;
-
+    getScore(value, p1Round);
 
     //ask to draw another card.
     if (p1Draw == true) {
         cout << "You currently score " << value << "." << endl;
-        score(value, p1Round);
+        getScore(value, p1Round);
         cout << "Press 1 to draw another card or 0 to stay.";
         cin >> p1Temp;
 
@@ -173,7 +177,7 @@ int main(int argc, char** argv) {
     //ask to draw another card.
     if (p1Draw == true) {
         cout << "You currently score " << value << "." << endl;
-        score(value, p1Round);
+        getScore(value, p1Round);
         cout << "Press 1 to draw another card or 0 to stay.";
         cin>>p1Temp;
 
@@ -227,7 +231,7 @@ int main(int argc, char** argv) {
     //ask to draw another card.
     if (p1Draw == true) {
         cout << "You currently score " << value << "." << endl;
-        score(value, p1Round);
+        getScore(value, p1Round);
         cout << "Press 1 to draw another card or 0 to stay." << endl;
 
 
@@ -270,7 +274,7 @@ int main(int argc, char** argv) {
         p1Draw = false;
 
     }
-    score(value, p1Round);
+    getScore(value, p1Round);
     //State what was received
 
     cout << "You scored " << value << "." << endl;
@@ -297,21 +301,28 @@ dealer() {
     return toBeat;
 }
 
-int score(int score, int round) {
-
-    //condition for going bust and losing. (0)
-    if (score > 21) {
+int getScore(int score, int round) {
+    //condition that states you can keep playing (0)
+    if (score < 21 && round < 4) {
         score = 0;
-    }//condition for wining with a blackjack (1)
-    else if (score == 21 && round == 1) {
+        cout << score << endl;
+    }
+    //condition for going bust and losing. (1)
+    if (score > 21) {
         score = 1;
-
-    }//condition for winning with 5 cards (2)
-    else if (score <= 21 && round == 4) {
+        cout << score << endl;
+    }//condition for wining with a blackjack (2)
+    else if (score == 21 && round == 1) {
         score = 2;
-    }//condition for winning by scoring 21 (3)
-    else if (score == 21) {
+        cout << score << endl;
+    }//condition for winning with 5 cards (3)
+    else if (score <= 21 && round == 4) {
         score = 3;
+        cout << score << endl;
+    }//condition for winning by scoring 21 (4)
+    else if (score == 21) {
+        score = 4;
+        cout << score << endl;
     }
 
     return score;
