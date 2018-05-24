@@ -1,7 +1,7 @@
 /* 
  * File:   main.cpp
  * Author: Julio A. Mendoza
- * Created on May 22, 2018, 1:50 AM
+ * Created on May 23, 2018, 11:30 PM
  *Purpose: This program draws five cards from a deck.
  *         It then stores the cards in the player's hand.
  *         It also checks for duplicates as they are stored.
@@ -14,8 +14,8 @@
  *      Allow the user to decide if to draw a card: COMPLETE
  *      State the card drawn per round: COMPLETE
  *      Add a value to the cards: COMPLETE
- *      Add a Win/Lose condition: IN PROGRESS
- *      Integrate the Dealer Function:  INCOMPLETE
+ *      Add a Win/Lose condition: COMPLETE
+ *      Integrate the Dealer Function:  IN PROGRESS
  * Past Challenge:
  *                Stating the card when using two different functions to draw 
  *                a card meant that the results would need to be combined,
@@ -32,14 +32,20 @@
  *                The issue with the isDupe and getValue functions has been
  *                resolved. Redrawing due to duplicate does no longer cause
  *                the value to not add up properly.
- * Current Challenge:
- *                   I will now attempt to create conditions stating if you 
- *                   win or lose. This should be easily done with a function 
- *                   and the use of the value variable in main.
- *  
- *                   The game now gives you a score variable used to determine
- *                   what can happen with the game. I still need to apply the 
- *                   if statements to guarantee they are used properly.
+ * Past Challenge:
+ *                I will now attempt to create conditions stating if you 
+ *                win or lose. This should be easily done with a function 
+ *                and the use of the value variable in main.
+ *
+ *                The game now gives you a score variable used to determine
+ *                what can happen with the game. I still need to apply the 
+ *                if statements to guarantee they are used properly.
+ * 
+ *                RESULT: The p1Round variable did not work very well to keep
+ *                track of cards held, i had to create a new variable for the
+ *                sole use of the getScore function.
+ * 
+ * Current Challenge: Integrate the Dealer function into the program.
  */
 
 //System Libraries
@@ -62,7 +68,7 @@ using namespace std; //namespace I/O stream library cr
 string deckSuit();
 string deckCard();
 int getVal(string); //this assigns a value to a card
-int getScore(int, int);
+int getScore(int, int); //this checks the score and if cards can still be drawn.
 bool isDupe(string [], int length, string toTest, int skip);
 
 
@@ -75,8 +81,10 @@ int main(int argc, char** argv) {
     bool p1Draw = true; //allows the user to decide to draw a card.
     bool p1ReDraw = false; //used to prevent duplicates.
     int p1Round = 0; //keeps track of the number of cards in hands of player one.
+    int cards = 0; //cards held, fixes issue with scoring.
     int p1Temp = 1; //for deciding if to draw a card
     int value = 0; //for keeping score
+    int result = 0; //to check the final result
     string playOne[6]; //used to hold the player one cards
     string valTemp = "0"; //Assists in getting the value of a card
 
@@ -90,6 +98,7 @@ int main(int argc, char** argv) {
     //r0
     valTemp = deckCard();
     playOne[p1Round] = valTemp + " of " + deckSuit();
+    cards++;
 
 
     //get value for the card.
@@ -99,6 +108,7 @@ int main(int argc, char** argv) {
     //card 2
     valTemp = deckCard();
     playOne[p1Round] = valTemp + " of " + deckSuit();
+    cards++;
 
 
     //get value for the card.
@@ -122,7 +132,9 @@ int main(int argc, char** argv) {
 
     cout << "You have drawn " << playOne[0] << " and "
             << playOne[1] << "." << endl;
-    getScore(value, p1Round);
+
+    //check if the game can continue.
+    if (getScore(value, p1Round) != 0)p1Draw = false;
 
     //ask to draw another card.
     if (p1Draw == true) {
@@ -146,6 +158,7 @@ int main(int argc, char** argv) {
     if (p1Draw == true) {
         valTemp = deckCard();
         playOne[p1Round] = valTemp + " of " + deckSuit();
+        cards++;
         //check if the new card is duplicated
         if (isDupe(playOne, 5, playOne[p1Round], p1Round) == true) {
             p1ReDraw = true;
@@ -173,6 +186,8 @@ int main(int argc, char** argv) {
     cout << playOne[0] << ", ";
     cout << playOne[1] << ".\n";
 
+    //check if the game can continue.
+    if (getScore(value, p1Round) != 0)p1Draw = false;
 
     //ask to draw another card.
     if (p1Draw == true) {
@@ -198,6 +213,7 @@ int main(int argc, char** argv) {
     if (p1Draw == true) {
         valTemp = deckCard();
         playOne[p1Round] = valTemp + " of " + deckSuit();
+        cards++;
         //check if the new card is duplicated
         if (isDupe(playOne, 5, playOne[p1Round], p1Round) == true) {
             p1ReDraw = true;
@@ -228,6 +244,9 @@ int main(int argc, char** argv) {
         cout << playOne[2] << ".\n";
     }
 
+    //check if the game can continue.
+    if (getScore(value, p1Round) != 0)p1Draw = false;
+
     //ask to draw another card.
     if (p1Draw == true) {
         cout << "You currently score " << value << "." << endl;
@@ -254,6 +273,7 @@ int main(int argc, char** argv) {
     if (p1Draw == true) {
         valTemp = deckCard();
         playOne[p1Round] = valTemp + " of " + deckSuit();
+        cards++;
         //check if the new card is duplicated
         if (isDupe(playOne, 5, playOne[p1Round], p1Round) == true) {
             p1ReDraw = true;
@@ -274,14 +294,34 @@ int main(int argc, char** argv) {
         p1Draw = false;
 
     }
-    getScore(value, p1Round);
-    //State what was received
+    result = getScore(value, cards);
 
+    //Output the results screen.
+
+    //if going bust and getting condition (1)
+    if (result == 0) {
+        cout << "your " << value << " went against the dealer." << endl;
+    } else if (result == 1) {
+        cout << "You have gone bust with your " << value << " and have lost!"
+                << endl;
+    }//if scoring 21 with condition (2)
+    else if (result == 2) {
+        cout << "Congratulations! Your " << value <<
+                " will be hard to beat!" << endl;
+    }// if scoring 21 via a Blackjack with condition (3)
+    else if (result == 3) {
+        cout << "Blackjack! There is only one way you'll be beat!" << endl;
+    }//if scoring a 21 with five cards with condition (4)
+    else if (result == 4) {
+        cout << "Congratulations!" << endl;
+    }
+    //State what was received for debug purposes.
     cout << "You scored " << value << "." << endl;
-    cout << "\n\n\n\n"
+    cout << "\n"
             "______________________________________\n"
             "I have received the following in MAIN:\n";
     for (int i = 0; i < 5; i++) {
+
         cout << playOne[i] << endl;
     }
 
@@ -298,6 +338,7 @@ dealer() {
     //it also assumes the dealer will occasionally get three tens.
     toBeat = rand() % 31 + 2; //[4-30]
     if (toBeat > 21) toBeat = 0; //this is used to know the dealer is bust.
+
     return toBeat;
 }
 
@@ -305,26 +346,21 @@ int getScore(int score, int round) {
     //condition that states you can keep playing (0)
     if (score < 21 && round < 4) {
         score = 0;
-        cout << score << endl;
+
     }
     //condition for going bust and losing. (1)
     if (score > 21) {
         score = 1;
-        cout << score << endl;
-    }//condition for wining with a blackjack (2)
-    else if (score == 21 && round == 1) {
-        score = 2;
-        cout << score << endl;
-    }//condition for winning with 5 cards (3)
-    else if (score <= 21 && round == 4) {
-        score = 3;
-        cout << score << endl;
-    }//condition for winning by scoring 21 (4)
+    }//condition for winning by scoring 21 (2)
     else if (score == 21) {
+        score = 2;
+    }//condition for wining with a blackjack (3)
+    else if (score == 21 && round == 1) {
+        score = 3;
+    }//condition for winning with 5 cards (4)
+    else if (score <= 21 && round == 4) {
         score = 4;
-        cout << score << endl;
     }
-
     return score;
 }
 
@@ -369,14 +405,14 @@ int getVal(string card) {
         return value;
     } else if (card == "Ace") {
 
-        cout << "Press '1' to play the Ace has a 1, or '0' to play it as an 11."
+        cout << "Press '1' to play the Ace has a 1, or '11' to play it as an 11."
                 << endl;
         cin>>decide;
         if (decide == 1) {
             value = 1;
             return value;
         }
-        if (decide == 0) {
+        if (decide == 11) {
             value = 11;
             return value;
         }
@@ -422,6 +458,7 @@ string deckSuit() {
     suit.close();
     //decide the suit drawn
     rSuit = rand() % 4;
+
     return dSuit[rSuit];
 }
 
